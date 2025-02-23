@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useDeferredValue } from 'react'
 
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
@@ -35,6 +35,10 @@ const App = () => {
           password: password
         }
       )
+
+      window.localStorage.setItem(
+        'loggedBloglistAppUser', JSON.stringify(user)
+      )
       setUser(user)
       //console.log(user)
       setUsername('')
@@ -44,6 +48,22 @@ const App = () => {
       console.error('login failed: wrong credentials')
     }
   }
+
+  const handleLogout = (event) => {
+    event.preventDefault()
+    console.log(`logging out user ${user.name}`)
+    window.localStorage.removeItem('loggedBloglistAppUser')
+    setUser(null)
+  }
+
+  //effect hooks
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBloglistAppUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+    }
+  }, [])
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -72,6 +92,7 @@ const App = () => {
       <div>
         <div>
           User '{user.name}' is logged in
+          <button onClick={ handleLogout }>logout</button>
         </div>
         <h2>blogs</h2>
         {blogs.map(blog =>
