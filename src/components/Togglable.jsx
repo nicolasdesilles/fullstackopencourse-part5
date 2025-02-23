@@ -6,6 +6,11 @@ const Togglable = forwardRef(({ children, buttonLabel }, refs) => {
     const hideWhenVisible = { display: visible ? 'none' : ''}
     const showWhenVisible = { display: visible ? '' : 'none'}
 
+    const buttonStyle = {
+        marginTop: '10px',
+        marginBottom: '10px'
+    }
+
     const toggleVisibility = () => {
         setVisible(!visible)
     }
@@ -19,7 +24,7 @@ const Togglable = forwardRef(({ children, buttonLabel }, refs) => {
     return (
         <div>
             <div style={ hideWhenVisible }>
-                <button onClick={ toggleVisibility }> { buttonLabel } </button>
+                <button style={ buttonStyle }onClick={ toggleVisibility }> { buttonLabel } </button>
             </div>
             <div style={ showWhenVisible }>
                 { children }

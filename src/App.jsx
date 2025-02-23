@@ -123,14 +123,19 @@ const App = () => {
   }
 
   const renderBlogsList = () => {
+
+    const logoutButtonStyle = {
+      margin: '5px'
+    }
+
     return (
       <div>
 
         <h1>blogs</h1>
 
         <div>
-          User '{user.name}' is logged in
-          <button onClick={ handleLogout }>logout</button>
+          <span>User '{user.name}' is logged in</span>
+          <span style={ logoutButtonStyle }><button onClick={ handleLogout }>logout</button></span>
         </div>
 
         <Togglable buttonLabel='create new blog' ref={ createNewBlogFormRef }>
