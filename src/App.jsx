@@ -15,16 +15,13 @@ const App = () => {
   const [successMessage, setSuccessMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   //references
   const createNewBlogFormRef = useRef()
 
   //event handlers
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async ( { username, password }) => {
     console.log(`login with username = ${username} and password = ${password}`)
 
     try {
@@ -46,8 +43,6 @@ const App = () => {
       }, 3000)
 
       setUser(user)
-      setUsername('')
-      setPassword('')
     }
     catch (exception) {
       console.error('login failed: wrong credentials')
@@ -122,13 +117,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to the app</h2>
-        <LoginForm 
-            onSubmit={ handleLogin } 
-            username={ username } 
-            password={ password } 
-            onUsernameChange={ ({ target }) => setUsername(target.value) }
-            onPasswordChange={ ({ target }) => setPassword(target.value) }
-          />
+        <LoginForm attemptLogin={ handleLogin }/>
       </div>
     )
   }
@@ -148,9 +137,7 @@ const App = () => {
 
           <h2>create a new blog entry</h2>
 
-          <CreateNewBlogForm
-            createNewBlogEntry={ handleCreateNewBlog }
-          />
+          <CreateNewBlogForm createNewBlogEntry={ handleCreateNewBlog }/>
 
         </Togglable>
         
