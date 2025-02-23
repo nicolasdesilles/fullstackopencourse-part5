@@ -2,28 +2,23 @@ import { useState, useEffect, useDeferredValue } from 'react'
 
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
+import CreateNewBlogForm from './components/CreateNewBlogForm'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
-import login from './services/login'
 
 const App = () => {
+  //state
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+  const [likes, setLikes] = useState('')
 
   //event handlers
-  const handleLoginFormUsernameChange = (event) => {
-    //console.log(event.target.value)
-    setUsername(event.target.value)
-  }
-
-  const handleLoginFormPasswordChange = (event) => {
-    //console.log(event.target.value)
-    setPassword(event.target.value)
-  }
-
   const handleLogin = async (event) => {
     event.preventDefault()
     console.log(`login with username = ${username} and password = ${password}`)
@@ -39,6 +34,7 @@ const App = () => {
       window.localStorage.setItem(
         'loggedBloglistAppUser', JSON.stringify(user)
       )
+      blogService.setToken(user.token)
       setUser(user)
       //console.log(user)
       setUsername('')
@@ -56,11 +52,38 @@ const App = () => {
     setUser(null)
   }
 
+  const handleCreateNewBlog = async (event) => {
+    event.preventDefault()
+
+    try {
+      const addedBlog = await blogService.create({ 
+        title: title,
+        author: author, 
+        url: url,
+        likes: likes
+      })
+      console.log(addedBlog)
+
+      const refeshedBlogsList = await blogService.getAll()
+      setBlogs(refeshedBlogsList)
+
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      setLikes('')
+    }
+    catch (exception) {
+      console.error('addind a blog failed: ', exception)
+    }
+
+  }
+
   //effect hooks
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
+      blogService.setToken(user.token)
       setUser(user)
     }
   }, [])
@@ -80,8 +103,8 @@ const App = () => {
             onSubmit={ handleLogin } 
             username={ username } 
             password={ password } 
-            onUsernameChange={ handleLoginFormUsernameChange }
-            onPasswordChange={ handleLoginFormPasswordChange}
+            onUsernameChange={ ({ target }) => setUsername(target.value) }
+            onPasswordChange={ ({ target }) => setPassword(target.value) }
           />
       </div>
     )
@@ -90,14 +113,34 @@ const App = () => {
   const renderBlogsList = () => {
     return (
       <div>
+
+        <h1>blogs</h1>
+
         <div>
           User '{user.name}' is logged in
           <button onClick={ handleLogout }>logout</button>
         </div>
-        <h2>blogs</h2>
+
+        <h2>create a new blog entry</h2>
+
+        <CreateNewBlogForm
+          onSubmit={ handleCreateNewBlog }
+          title={ title }
+          author={ author }
+          url={ url }
+          likes={ likes }
+          onTitleChange={ ({ target }) => { setTitle(target.value) } }
+          onAuthorChange={ ({ target }) => { setAuthor(target.value) } }
+          onUrlChange={ ({ target }) => { setUrl(target.value) } }
+          onLikesChange={ ({ target }) => { setLikes(target.value) } }
+        />
+
+        <h2>blogs list</h2>
+        
         {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} />
         )}
+
       </div>
     )
   }
