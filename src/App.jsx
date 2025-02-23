@@ -3,12 +3,16 @@ import { useState, useEffect, useDeferredValue } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import CreateNewBlogForm from './components/CreateNewBlogForm'
+import SuccessNotification from './components/SuccessNotification'
+import ErrorNotification from './components/ErrorNotification'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
   //state
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -35,13 +39,22 @@ const App = () => {
         'loggedBloglistAppUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
+
+      setSuccessMessage(`successfully logged in as ${user.username}`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 3000)
+
       setUser(user)
-      //console.log(user)
       setUsername('')
       setPassword('')
     }
     catch (exception) {
       console.error('login failed: wrong credentials')
+      setErrorMessage('wrong username or password')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 3000)
     }
   }
 
@@ -50,6 +63,11 @@ const App = () => {
     console.log(`logging out user ${user.name}`)
     window.localStorage.removeItem('loggedBloglistAppUser')
     setUser(null)
+
+    setSuccessMessage('successfully logged out')
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 3000)
   }
 
   const handleCreateNewBlog = async (event) => {
@@ -67,13 +85,22 @@ const App = () => {
       const refeshedBlogsList = await blogService.getAll()
       setBlogs(refeshedBlogsList)
 
+      setSuccessMessage(`successfully added blog '${addedBlog.title}' by '${addedBlog.author}'`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 3000)
+
       setTitle('')
       setAuthor('')
       setUrl('')
       setLikes('')
     }
     catch (exception) {
-      console.error('addind a blog failed: ', exception)
+      console.error('adding a blog failed: ', exception.response.data)
+      setErrorMessage(exception.response.data.error)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 3000)
     }
 
   }
@@ -147,9 +174,13 @@ const App = () => {
 
   return (
     <div>
+
+      <SuccessNotification message={ successMessage }/>
+      <ErrorNotification message={ errorMessage }/>
+
       { user === null ?
-         renderLoginForm() :
-         renderBlogsList()
+        renderLoginForm() :
+        renderBlogsList()
       }
     </div>
   )
