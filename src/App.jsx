@@ -112,6 +112,11 @@ const App = () => {
     )  
   }, [])
 
+  const refreshBlogs = async () => {
+    const blogs = await blogService.getAll()
+    setBlogs( blogs )
+  }
+
   //components rendering functions
   const renderLoginForm = () => {
     return (
@@ -150,7 +155,7 @@ const App = () => {
         <h2>blogs list</h2>
         
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} refreshBlogs={ refreshBlogs } />
         )}
 
       </div>
