@@ -1,25 +1,40 @@
-const CreateNewBlogForm = ({ 
-    onSubmit, 
-    title, 
-    author, 
-    url, 
-    likes,
-    onTitleChange,
-    onAuthorChange,
-    onUrlChange,
-    onLikesChange  
-}) => {
+import { useState } from 'react'
+
+const CreateNewBlogForm = ({ createNewBlogEntry }) => {
+
+    //state
+    const [title, setTitle] = useState('')
+    const [author, setAuthor] = useState('')
+    const [url, setUrl] = useState('')
+
+    //submit blog func
+    const addNewBlog = (event) => {
+        event.preventDefault()
+
+        createNewBlogEntry(
+            {
+                title: title,
+                author: author,
+                url: url
+            }
+        )
+
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+
+    }
 
     return (
         <div>
-            <form onSubmit={ onSubmit }>
+            <form onSubmit={ addNewBlog }>
                 <div>
                     title: 
                     <input
                         type="text"
                         value={ title }
                         name="Title"
-                        onChange={ onTitleChange }
+                        onChange={ ({ target }) => setTitle(target.value) }
                     />
                 </div>
                 <div>
@@ -28,7 +43,7 @@ const CreateNewBlogForm = ({
                         type="text"
                         value={ author }
                         name="Author"
-                        onChange={ onAuthorChange }
+                        onChange={ ({ target }) => setAuthor(target.value) }
                     />
                 </div>
                 <div>
@@ -37,16 +52,7 @@ const CreateNewBlogForm = ({
                         type="url"
                         value={ url }
                         name="URL"
-                        onChange={ onUrlChange }
-                    />
-                </div>
-                <div>
-                    likes: 
-                    <input
-                        type="number"
-                        value={ likes }
-                        name="Likes"
-                        onChange={ onLikesChange }
+                        onChange={ ({ target }) => setUrl(target.value) }
                     />
                 </div>
                 <button type="submit">create</button>

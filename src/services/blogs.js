@@ -12,7 +12,7 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
-const create = async ({ title, author, url, likes }) => {
+const create = async ({ title, author, url }) => {
   const config = {
     headers: { Authorization: token }
   }
@@ -20,8 +20,7 @@ const create = async ({ title, author, url, likes }) => {
   const newBlog = {
     title: title,
     author:  author,
-    url: url,
-    likes: likes
+    url: url
   }
 
   const response = await axios.post(baseUrl, newBlog, config)

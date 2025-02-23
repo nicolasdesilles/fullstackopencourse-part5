@@ -1,10 +1,11 @@
-import { useState, useEffect, useDeferredValue } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import CreateNewBlogForm from './components/CreateNewBlogForm'
 import SuccessNotification from './components/SuccessNotification'
 import ErrorNotification from './components/ErrorNotification'
+import Togglable from './components/Togglable'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -17,10 +18,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-  const [likes, setLikes] = useState('')
+
+  //references
+  const createNewBlogFormRef = useRef()
 
   //event handlers
   const handleLogin = async (event) => {
@@ -70,30 +70,26 @@ const App = () => {
     }, 3000)
   }
 
-  const handleCreateNewBlog = async (event) => {
-    event.preventDefault()
+  const handleCreateNewBlog = async (newBlog) => {
 
     try {
       const addedBlog = await blogService.create({ 
-        title: title,
-        author: author, 
-        url: url,
-        likes: likes
+        title: newBlog.title,
+        author: newBlog.author, 
+        url: newBlog.url
       })
-      console.log(addedBlog)
+      //console.log(addedBlog)
 
       const refeshedBlogsList = await blogService.getAll()
       setBlogs(refeshedBlogsList)
+
+      createNewBlogFormRef.current.toggleVisibility()
 
       setSuccessMessage(`successfully added blog '${addedBlog.title}' by '${addedBlog.author}'`)
       setTimeout(() => {
         setSuccessMessage(null)
       }, 3000)
 
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      setLikes('')
     }
     catch (exception) {
       console.error('adding a blog failed: ', exception.response.data)
@@ -148,19 +144,16 @@ const App = () => {
           <button onClick={ handleLogout }>logout</button>
         </div>
 
-        <h2>create a new blog entry</h2>
+        <Togglable buttonLabel='create new blog' ref={ createNewBlogFormRef }>
 
-        <CreateNewBlogForm
-          onSubmit={ handleCreateNewBlog }
-          title={ title }
-          author={ author }
-          url={ url }
-          likes={ likes }
-          onTitleChange={ ({ target }) => { setTitle(target.value) } }
-          onAuthorChange={ ({ target }) => { setAuthor(target.value) } }
-          onUrlChange={ ({ target }) => { setUrl(target.value) } }
-          onLikesChange={ ({ target }) => { setLikes(target.value) } }
-        />
+          <h2>create a new blog entry</h2>
+
+          <CreateNewBlogForm
+            createNewBlogEntry={ handleCreateNewBlog }
+          />
+
+        </Togglable>
+        
 
         <h2>blogs list</h2>
         
