@@ -107,14 +107,20 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    blogService.getAll().then(blogs => {
+      const sortedBlogs = blogs.sort(
+        (a, b) => b.likes - a.likes
+      )
+      setBlogs( sortedBlogs )
+    })  
   }, [])
 
   const refreshBlogs = async () => {
     const blogs = await blogService.getAll()
-    setBlogs( blogs )
+    const sortedBlogs = blogs.sort(
+      (a, b) => b.likes - a.likes
+    )
+    setBlogs( sortedBlogs )
   }
 
   //components rendering functions
