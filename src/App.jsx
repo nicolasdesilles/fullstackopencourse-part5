@@ -68,9 +68,9 @@ const App = () => {
   const handleCreateNewBlog = async (newBlog) => {
 
     try {
-      const addedBlog = await blogService.create({ 
+      const addedBlog = await blogService.create({
         title: newBlog.title,
-        author: newBlog.author, 
+        author: newBlog.author,
         url: newBlog.url
       })
       //console.log(addedBlog)
@@ -112,7 +112,7 @@ const App = () => {
         (a, b) => b.likes - a.likes
       )
       setBlogs( sortedBlogs )
-    })  
+    })
   }, [])
 
   const refreshBlogs = async () => {
@@ -145,7 +145,7 @@ const App = () => {
         <h1>blogs</h1>
 
         <div>
-          <span>User '{user.name}' is logged in</span>
+          <span>User {user.name} is logged in</span>
           <span style={ logoutButtonStyle }><button onClick={ handleLogout }>logout</button></span>
         </div>
 
@@ -156,10 +156,9 @@ const App = () => {
           <CreateNewBlogForm createNewBlogEntry={ handleCreateNewBlog }/>
 
         </Togglable>
-        
 
         <h2>blogs list</h2>
-        
+
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} refreshBlogs={ refreshBlogs } />
         )}

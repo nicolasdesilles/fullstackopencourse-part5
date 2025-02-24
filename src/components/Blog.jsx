@@ -9,9 +9,9 @@ const Blog = ({ blog, refreshBlogs }) => {
   const loggedUserJSON = window.localStorage.getItem('loggedBloglistAppUser')
   const loggedUser = JSON.parse(loggedUserJSON)
 
-  const hideWhenVisible = { display: visible ? 'none' : ''}
-  const showWhenVisible = { display: visible ? '' : 'none'}
-  const deleteButtonVisibility = { display: loggedUser.username === blog.user.username ? '' : 'none'}
+  const hideWhenVisible = { display: visible ? 'none' : '' }
+  const showWhenVisible = { display: visible ? '' : 'none' }
+  const deleteButtonVisibility = { display: loggedUser.username === blog.user.username ? '' : 'none' }
 
   const blogStyle = {
     border: '2px outset #000000',
@@ -32,7 +32,7 @@ const Blog = ({ blog, refreshBlogs }) => {
   }
 
   const toggleVisibility = () => {
-      setVisible(!visible)
+    setVisible(!visible)
   }
 
   const onLikeClicked = async (event) => {
@@ -83,12 +83,11 @@ const Blog = ({ blog, refreshBlogs }) => {
           </div>
           <div>
             <span style={ deleteButtonVisibility }><button onClick={ onDeleteClicked }>remove</button></span>
-          </div>    
+          </div>
         </div>
       </div>
-    </div>  
+    </div>
   )
-  
 }
 
 export default Blog
