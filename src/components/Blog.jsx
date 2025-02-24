@@ -6,8 +6,12 @@ const Blog = ({ blog, refreshBlogs }) => {
 
   const [visible, setVisible] = useState(false)
 
+  const loggedUserJSON = window.localStorage.getItem('loggedBloglistAppUser')
+  const loggedUser = JSON.parse(loggedUserJSON)
+
   const hideWhenVisible = { display: visible ? 'none' : ''}
   const showWhenVisible = { display: visible ? '' : 'none'}
+  const deleteButtonVisibility = { display: loggedUser.username === blog.user.username ? '' : 'none'}
 
   const blogStyle = {
     border: '2px outset #000000',
@@ -48,6 +52,14 @@ const Blog = ({ blog, refreshBlogs }) => {
 
   }
 
+  const onDeleteClicked = async (event) => {
+    event.preventDefault()
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      await blogService.remove(blog)
+      refreshBlogs()
+    }
+  }
+
   return (
     <div style={ blogStyle }>
       <div style={ hideWhenVisible }>
@@ -68,6 +80,9 @@ const Blog = ({ blog, refreshBlogs }) => {
           </div>
           <div>
             <span style={ fieldNameStyle }>added by:</span> <span>{ blog.user.name }</span>
+          </div>
+          <div>
+            <span style={ deleteButtonVisibility }><button onClick={ onDeleteClicked }>remove</button></span>
           </div>    
         </div>
       </div>
