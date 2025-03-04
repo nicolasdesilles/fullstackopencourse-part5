@@ -11,7 +11,7 @@ const Blog = ({ blog, refreshBlogs }) => {
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
-  const deleteButtonVisibility = { display: loggedUser.username === blog.user.username ? '' : 'none' }
+  const deleteButtonVisibility = { display: ( loggedUser !== null && loggedUser.username === blog.user.username ) ? '' : 'none' }
 
   const blogStyle = {
     border: '2px outset #000000',
@@ -62,21 +62,20 @@ const Blog = ({ blog, refreshBlogs }) => {
 
   return (
     <div style={ blogStyle }>
+      <span style={ titleStyle } data-testid='blog-title'>{ blog.title }</span> by <span style={ authorStyle } data-testid='blog-author'>{ blog.author }</span>
       <div style={ hideWhenVisible }>
         <div>
-          <span style={ titleStyle }>{ blog.title }</span> by <span style={ authorStyle }>{ blog.author }</span>
           <span> <button onClick={ toggleVisibility }>view</button>  </span>
         </div>
       </div>
       <div style={ showWhenVisible }>
-        <span style={ titleStyle }>{ blog.title }</span> by <span style={ authorStyle }>{ blog.author }</span>
         <span> <button onClick={ toggleVisibility }>hide</button>  </span>
         <div style={ detailsStyle }>
           <div>
-            <span style={ fieldNameStyle }>url:</span> <span>{ blog.url }</span>
+            <span style={ fieldNameStyle }>url:</span> <span data-testid='blog-url'>{ blog.url }</span>
           </div>
           <div>
-            <span style={ fieldNameStyle }>likes:</span> <span>{ blog.likes }</span> <span><button onClick={ onLikeClicked }>like</button></span>
+            <span style={ fieldNameStyle }>likes:</span> <span data-testid='blog-likes'>{ blog.likes }</span> <span><button onClick={ onLikeClicked }>like</button></span>
           </div>
           <div>
             <span style={ fieldNameStyle }>added by:</span> <span>{ blog.user.name }</span>

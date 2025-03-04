@@ -7,6 +7,11 @@ const setToken = newToken => {
   token = `Bearer ${newToken}`
 }
 
+const get = async ({ blogId }) => {
+  const response = await axios.get(`${baseUrl}/${blogId}`)
+  return response.data
+}
+
 const getAll = () => {
   const request = axios.get(baseUrl)
   return request.then(response => response.data)
@@ -56,4 +61,4 @@ const remove = async ( blogToDelete ) => {
 
 }
 
-export default { getAll, setToken, create, update, remove }
+export default { getAll, get, setToken, create, update, remove }
