@@ -96,6 +96,32 @@ const App = () => {
 
   }
 
+  const handleLikeClicked = async ({ event, blog }) => {
+    event.preventDefault()
+
+    const newBlog = {
+      id: blog.id,
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes + 1,
+    }
+
+    await blogService.update(newBlog)
+
+    refreshBlogs()
+
+  }
+
+  const handleDeleteClicked = async ({ event, blog }) => {
+    event.preventDefault()
+
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      await blogService.remove(blog)
+      refreshBlogs()
+    }
+  }
+
   //effect hooks
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistAppUser')
@@ -160,7 +186,12 @@ const App = () => {
         <h2>blogs list</h2>
 
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} refreshBlogs={ refreshBlogs } />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            onLikeClicked={ (event) => handleLikeClicked({ event, blog }) }
+            onDeleteClicked={ (event) => handleDeleteClicked({ event, blog }) }
+          />
         )}
 
       </div>

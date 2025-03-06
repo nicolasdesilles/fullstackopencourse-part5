@@ -7,7 +7,7 @@ import { expect } from 'vitest'
 describe('blog rendering', async () => {
 
   const response = await axios.get('http://localhost:3003/api/blogs/67ba3a1a7f352b4d4bc203bd')
-  let blog = response.data
+  const blog = response.data
 
   test('renders blog title and author by default', async () => {
 
@@ -46,6 +46,27 @@ describe('blog rendering', async () => {
     expect(urlElement).toBeVisible()
     expect(likesElement).toBeVisible()
 
+
+  })
+
+  test('clicking the like button twice calls the event handler twice', async () => {
+
+    const mockHandler = vi.fn()
+    const testUser = userEvent.setup()
+
+    render(<Blog blog={ blog } onLikeClicked={ mockHandler }/>)
+    const viewButton = screen.getByTestId('blog-viewbutton')
+
+    await testUser.click(viewButton)
+
+    const likeButton = screen.getByTestId('blog-likebutton')
+
+    expect(likeButton).toBeDefined()
+
+    await testUser.click(likeButton)
+    await testUser.click(likeButton)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
 
   })
 

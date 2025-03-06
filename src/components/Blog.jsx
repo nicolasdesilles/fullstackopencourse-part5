@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, refreshBlogs }) => {
+const Blog = ({ blog, onLikeClicked, onDeleteClicked }) => {
 
   const [visible, setVisible] = useState(false)
 
@@ -35,31 +35,6 @@ const Blog = ({ blog, refreshBlogs }) => {
     setVisible(!visible)
   }
 
-  const onLikeClicked = async (event) => {
-    event.preventDefault()
-
-    const newBlog = {
-      id: blog.id,
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: blog.likes + 1,
-    }
-
-    await blogService.update(newBlog)
-
-    refreshBlogs()
-
-  }
-
-  const onDeleteClicked = async (event) => {
-    event.preventDefault()
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      await blogService.remove(blog)
-      refreshBlogs()
-    }
-  }
-
   return (
     <div style={ blogStyle }>
       <span style={ titleStyle } data-testid='blog-title'>{ blog.title }</span> by <span style={ authorStyle } data-testid='blog-author'>{ blog.author }</span>
@@ -75,7 +50,7 @@ const Blog = ({ blog, refreshBlogs }) => {
             <span style={ fieldNameStyle }>url:</span> <span data-testid='blog-url'>{ blog.url }</span>
           </div>
           <div>
-            <span style={ fieldNameStyle }>likes:</span> <span data-testid='blog-likes'>{ blog.likes }</span> <span><button onClick={ onLikeClicked }>like</button></span>
+            <span style={ fieldNameStyle }>likes:</span> <span data-testid='blog-likes'>{ blog.likes }</span> <span><button onClick={ onLikeClicked } data-testid='blog-likebutton'>like</button></span>
           </div>
           <div>
             <span style={ fieldNameStyle }>added by:</span> <span>{ blog.user.name }</span>
