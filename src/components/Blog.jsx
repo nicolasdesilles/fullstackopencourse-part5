@@ -65,7 +65,7 @@ const Blog = ({ blog, refreshBlogs }) => {
       <span style={ titleStyle } data-testid='blog-title'>{ blog.title }</span> by <span style={ authorStyle } data-testid='blog-author'>{ blog.author }</span>
       <div style={ hideWhenVisible }>
         <div>
-          <span> <button onClick={ toggleVisibility }>view</button>  </span>
+          <span> <button onClick={ toggleVisibility } data-testid='blog-viewbutton'>view</button>  </span>
         </div>
       </div>
       <div style={ showWhenVisible }>
