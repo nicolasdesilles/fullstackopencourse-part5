@@ -31,6 +31,7 @@ const LoginForm = ({ attemptLogin }) => {
             value={ username }
             name="Username"
             onChange={ ({ target }) => setUsername(target.value) }
+            data-testid='login-username'
           />
         </div>
         <div>
@@ -40,9 +41,10 @@ const LoginForm = ({ attemptLogin }) => {
             value={ password }
             name="Password"
             onChange={ ({ target }) => setPassword(target.value) }
+            data-testid='login-password'
           />
         </div>
-        <button type="submit">login</button>
+        <button type="submit" data-testid='login-button'>login</button>
       </form>
     </div>
   )
