@@ -49,4 +49,39 @@ describe('blogs app', () => {
 
   })
 
+  describe('when logged in', () => {
+
+    beforeEach(async ({ page }) => {
+
+      await page.getByTestId('login-username').fill('testuser')
+      await page.getByTestId('login-password').fill('secure')
+      
+      await page.getByTestId('login-button').click()
+
+      await expect(page.getByText('User Test User is logged in')).toBeVisible()
+
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+
+      await page.getByTestId('createblog-button').click()
+
+      await page.getByTestId('newblogform-titleinput').fill('A Test Blog')
+      await page.getByTestId('newblogform-authorinput').fill('Great Author')
+      await page.getByTestId('newblogform-urlinput').fill('https://hello.fr')
+
+      await page.getByTestId('newblogform-submitbutton').click()
+
+      await expect(page.getByText(`successfully added blog 'A Test Blog' by 'Great Author'`)).toBeVisible()
+      await expect(page.getByText(`A Test Blog by Great Author`)).toBeVisible()
+
+     
+
+
+
+  
+    })
+
+  })
+
 })
