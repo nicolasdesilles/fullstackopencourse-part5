@@ -13,6 +13,13 @@ describe('blogs app', () => {
         password: 'secure'
       }
     })
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'Another User',
+        username: 'anotheruser',
+        password: 'verysecure'
+      }
+    })
 
     await page.goto('http://localhost:5173')
   })
@@ -94,6 +101,21 @@ describe('blogs app', () => {
       await page.goto("http://localhost:5173")
 
       await expect(page.getByText('Blog To Delete by Bad Author')).not.toBeVisible()
+      
+    })
+
+    test('a blog added by another user will not display the delete button', async ({ page }) => {
+
+      await createBlog(page, 'Blog From Someone Else', 'An Author', 'https://hey.fr')
+
+      await page.getByRole("button", { name: 'logout'}).click()
+
+      await loginWith(page, 'anotheruser', 'verysecure')
+
+      await page.getByRole("button", { name: 'view'}).first().click()
+
+      const removeButton = await page.getByRole("button", { name: 'remove'}).first()
+      await expect(removeButton).toBeHidden()
       
     })
 
