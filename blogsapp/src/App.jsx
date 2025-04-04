@@ -117,8 +117,10 @@ const App = () => {
     event.preventDefault()
 
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      console.log(`user confirmed deletion of blog '${blog.title}'`)
       await blogService.remove(blog)
       refreshBlogs()
+      console.log('refresh after blog deletion done.')
     }
   }
 

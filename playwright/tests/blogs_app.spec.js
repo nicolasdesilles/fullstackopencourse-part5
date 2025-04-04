@@ -78,6 +78,25 @@ describe('blogs app', () => {
 
     })
 
+    test('a blog added by the logged in user can be deleted', async ({ page }) => {
+
+      await createBlog(page, 'Blog To Delete', 'Bad Author', 'https://bye.fr')
+
+      await page.getByRole("button", { name: 'view'}).first().click()
+
+      const removeButton = await page.getByRole("button", { name: 'remove'}).first()
+      await expect(removeButton).toBeVisible()
+
+      page.on('dialog', dialog => dialog.accept());
+
+      await removeButton.click()
+
+      await page.goto("http://localhost:5173")
+
+      await expect(page.getByText('Blog To Delete by Bad Author')).not.toBeVisible()
+      
+    })
+
   })
 
 })
