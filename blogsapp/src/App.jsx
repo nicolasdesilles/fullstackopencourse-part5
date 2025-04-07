@@ -154,7 +154,7 @@ const App = () => {
   //components rendering functions
   const renderLoginForm = () => {
     return (
-      <div>
+      <div data-testid='blogs-list'>
         <h2>log in to the app</h2>
         <LoginForm attemptLogin={ handleLogin }/>
       </div>

@@ -14,6 +14,8 @@ const createBlog = async (page, title, author, url) => {
 
   await page.getByTestId('newblogform-submitbutton').click()
 
+  await page.getByText(`${title} by ${author}`).waitFor()
+
 }
 
 export { loginWith, createBlog }

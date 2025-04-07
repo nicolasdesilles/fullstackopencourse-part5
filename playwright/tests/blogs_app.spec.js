@@ -1,19 +1,20 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
 const { loginWith, createBlog } = require('./helper.js')
+const { before } = require('node:test')
 
 
 describe('blogs app', () => {
   beforeEach(async ({ page, request }) => {
 
-    await request.post('http://localhost:3003/api/testing/reset')
-    await request.post('http://localhost:3003/api/users', {
+    await request.post('/api/testing/reset')
+    await request.post('/api/users', {
       data: {
         name: 'Test User',
         username: 'testuser',
         password: 'secure'
       }
     })
-    await request.post('http://localhost:3003/api/users', {
+    await request.post('/api/users', {
       data: {
         name: 'Another User',
         username: 'anotheruser',
@@ -21,7 +22,7 @@ describe('blogs app', () => {
       }
     })
 
-    await page.goto('http://localhost:5173')
+    await page.goto('/')
   })
 
   test('login form is shown', async ({ page }) => {
@@ -107,6 +108,7 @@ describe('blogs app', () => {
     test('a blog added by another user will not display the delete button', async ({ page }) => {
 
       await createBlog(page, 'Blog From Someone Else', 'An Author', 'https://hey.fr')
+      await expect(page.getByText(`Blog From Someone Else by An Author`)).toBeVisible()
 
       await page.getByRole("button", { name: 'logout'}).click()
 
@@ -118,6 +120,40 @@ describe('blogs app', () => {
       await expect(removeButton).toBeHidden()
       
     })
+
+    test('the blogs are ordered by decreasing number of likes', async ({ page }) => {
+
+      await createBlog(page, 'Blog 1', 'Author1', 'https://blog1.fr')
+      await createBlog(page, 'Blog 2', 'Author2', 'https://blog2.fr')
+      await createBlog(page, 'Blog 3', 'Author3', 'https://blog3.fr')
+
+      await page.getByRole("button", { name: 'view'}).first().click()
+      await page.getByRole("button", { name: 'view'}).first().click()
+      await page.getByRole("button", { name: 'view'}).first().click()
+
+      const blog1Element = await page.getByText('Blog 1 by Author1')
+
+      await blog1Element.getByRole("button", { name: 'like'}).click()
+      await expect(blog1Element.getByText('likes:')).toHaveText('likes: 1')
+
+      await blog1Element.getByRole("button", { name: 'like'}).click()
+      await expect(blog1Element.getByText('likes:')).toHaveText('likes: 2')
+
+      const blog3Element = await page.getByText('Blog 3 by Author3')
+
+      await blog3Element.getByRole("button", { name: 'like'}).click()
+      await expect(blog3Element.getByText('likes:')).toHaveText('likes: 1')
+
+      const displayedBlogs = await page.getByText(/Blog . by Author./).all()
+
+      await expect(displayedBlogs[0]).toContainText('Blog 1 by Author1')
+      await expect(displayedBlogs[1]).toContainText('Blog 3 by Author3')
+      await expect(displayedBlogs[2]).toContainText('Blog 2 by Author2')
+
+
+      
+      
+    })    
 
   })
 
